@@ -1,6 +1,6 @@
 "use strict";
 
-const {platform, type} = require("os");
+const { platform, type } = require("os");
 
 const supportedPlatforms = new Set([
   "aix",
@@ -25,14 +25,19 @@ if (supportedPlatforms.has(plat)) {
   }
 
   const m = require(`./${file}`);
+  m.all().then(p => console.log(p))
   module.exports.v4 = () => m.v4();
   module.exports.v6 = () => m.v6();
   module.exports.v4.sync = () => m.v4.sync();
   module.exports.v6.sync = () => m.v6.sync();
+  module.exports.all = () => m.all()
 } else {
   const err = new Error(`Unsupported Platform: ${plat}`);
   module.exports.v4 = () => Promise.reject(err);
   module.exports.v6 = () => Promise.reject(err);
-  module.exports.v4.sync = () => {throw err; };
-  module.exports.v6.sync = () => {throw err; };
+  module.exports.v4.sync = () => { throw err; };
+  module.exports.v6.sync = () => { throw err; };
+  module.exports.all = () => { throw err; };
 }
+
+0
