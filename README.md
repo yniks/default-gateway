@@ -1,7 +1,10 @@
 # default-gateway
+
 [![](https://img.shields.io/npm/v/default-gateway.svg?style=flat)](https://www.npmjs.org/package/default-gateway) [![](https://img.shields.io/npm/dm/default-gateway.svg)](https://www.npmjs.org/package/default-gateway)
 
-> Get the default network gateway, cross-platform.
+> > FORKED because I needed to get a list of all interfaces with a default gateway
+
+## Get the default network gateway, cross-platform.
 
 Obtains the machine's default gateway through `exec` calls to OS routing interfaces.
 
@@ -19,30 +22,42 @@ $ npm install default-gateway
 ## Example
 
 ```js
-const defaultGateway = require('default-gateway');
+const defaultGateway = require("default-gateway");
 
-const {gateway, interface} = await defaultGateway.v4();
-// gateway = '1.2.3.4', interface = 'en1'
+const all = defaultGateway.all();
+// [{ gateway = '2001:db8::1', interface = 'en2' ,  family = v6},{gateway = '1.2.3.4', interface = 'en1' ,family = v4}]
+const { gateway, interface } = await defaultGateway.v4();
+// gateway = '1.2.3.4', interface = 'en1' ,family = v4
 
-const {gateway, interface} = await defaultGateway.v6();
-// gateway = '2001:db8::1', interface = 'en2'
+const { gateway, interface } = await defaultGateway.v6();
+// gateway = '2001:db8::1', interface = 'en2',  family = v6
 
-const {gateway, interface} = defaultGateway.v4.sync();
-// gateway = '1.2.3.4', interface = 'en1'
+const { gateway, interface } = defaultGateway.v4.sync();
+// gateway = '1.2.3.4', interface = 'en1'  , family = v4
 
-const {gateway, interface} = defaultGateway.v6.sync();
-// gateway = '2001:db8::1', interface = 'en2'
+const { gateway, interface } = defaultGateway.v6.sync();
+// gateway = '2001:db8::1', interface = 'en2' ,  family = v6
 ```
 
 ## API
+
+### defaultGateway.all()
+
+##### WARNING: As of now all is implemented for linux only
+
 ### defaultGateway.v4()
+
 ### defaultGateway.v6()
+
 ### defaultGateway.v4.sync()
+
 ### defaultGateway.v6.sync()
 
-Returns: `result` *Object*
-  - `gateway`: The IP address of the default gateway.
-  - `interface`: The name of the interface. On Windows, this is the network adapter name.
+Returns: `result` _Object_
+
+- `gateway`: The IP address of the default gateway.
+- `interface`: The name of the interface. On Windows, this is the network adapter name.
+- `family`: IP family of the result. Usefull when using `all()`.
 
 The `.v{4,6}()` methods return a Promise while the `.v{4,6}.sync()` variants will return the result synchronously.
 
