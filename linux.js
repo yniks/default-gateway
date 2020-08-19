@@ -11,26 +11,26 @@ const args = {
 };
 const getMultiple = (stdout, family) => {
   let result = [];
-  var interfaces_ = networkInterfaces()
-    (stdout || "").trim().split("\n").forEach(line => {
-      const results = /default( via .+?)?( dev .+?)( |$)/.exec(line) || [];
-      const gateway = (results[1] || "").substring(5);
-      const iface = (results[2] || "").substring(5);
-      if (!(iface in interfaces_)) return;
-      if (gateway && isIP(gateway)) { // default via 1.2.3.4 dev en0
-        result.push({ gateway, interface: (iface ? iface : null), family });
-      } else if (iface && !gateway) { // default via dev en0
-        const interfaces = networkInterfaces();
-        const addresses = interfaces[iface];
-        if (!addresses || !addresses.length) return;
+  var interfaces_ = networkInterfaces();
+  (stdout || "").trim().split("\n").forEach(line => {
+    const results = /default( via .+?)?( dev .+?)( |$)/.exec(line) || [];
+    const gateway = (results[1] || "").substring(5);
+    const iface = (results[2] || "").substring(5);
+    if (!(iface in interfaces_)) return;
+    if (gateway && isIP(gateway)) { // default via 1.2.3.4 dev en0
+      result.push({ gateway, interface: (iface ? iface : null), family });
+    } else if (iface && !gateway) { // default via dev en0
+      const interfaces = networkInterfaces();
+      const addresses = interfaces[iface];
+      if (!addresses || !addresses.length) return;
 
-        addresses.forEach(addr => {
-          if (addr.family.substring(2) === family && isIP(addr.address)) {
-            result.push({ gateway: addr.address, interface: (iface ? iface : null), family })
-          }
-        });
-      }
-    });
+      addresses.forEach(addr => {
+        if (addr.family.substring(2) === family && isIP(addr.address)) {
+          result.push({ gateway: addr.address, interface: (iface ? iface : null), family })
+        }
+      });
+    }
+  });
 
   return result;
 }
